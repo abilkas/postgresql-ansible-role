@@ -1,0 +1,81 @@
+---
+pg_version: 14
+pg_admin_user: postgres
+pg_admin_db: postgres
+pg_backup_script_path: "/opt/scripts/pg_backup"
+pg_users:
+  - name: test_user
+    # password - helloworld #vault-pass - helloworld
+    password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          33626232643665366433336239363263643437326630656165633335353136663635633862393934
+          6231356465316233653632356331316233326231356337650a383266363137623633373463623766
+          34613733646665393135366662373366633365346438353438313763343864636561366132313139
+          3265366465303162320a636363343861393830303332306139643262623066613262663035613634
+          3836
+  - name: second_user
+    password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          33626232643665366433336239363263643437326630656165633335353136663635633862393934
+          6231356465316233653632356331316233326231356337650a383266363137623633373463623766
+          34613733646665393135366662373366633365346438353438313763343864636561366132313139
+          3265366465303162320a636363343861393830303332306139643262623066613262663035613634
+          3836
+  - name: third_user
+    password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          33626232643665366433336239363263643437326630656165633335353136663635633862393934
+          6231356465316233653632356331316233326231356337650a383266363137623633373463623766
+          34613733646665393135366662373366633365346438353438313763343864636561366132313139
+          3265366465303162320a636363343861393830303332306139643262623066613262663035613634
+          3836
+    state: absent
+
+
+pg_databases:
+  - name: test_db
+    owner: test_user
+  - name: second_db
+    owner: second_user
+  - name: third_db
+    owner: third_user
+    state: absent
+
+pg_users_privs:
+  - database: test_db
+    roles: test_user
+    privs: SELECT,INSERT,UPDATE
+  - database: second_db
+    roles: second_user
+    privs: SELECT,INSERT,UPDATE
+  - database: third_db
+    roles: third_user
+    privs: SELECT,INSERT,UPDATE
+    state: absent
+
+pg_hba_configure:
+  - databases: all
+    users: "{{ pg_admin_user }}"
+    source: ""
+    method: peer
+    contype: local
+  - databases: test_db
+    users: test_user
+    source: "0.0.0.0/0"
+    method: md5
+    contype: host
+  - databases: second_db
+    users: second_user
+    source: "0.0.0.0/0"
+    method: md5
+    contype: host
+  - databases: third_db
+    users: third_user
+    source: "0.0.0.0/0"
+    method: md5
+    contype: host
+    state: absent
+
+pg_configure:
+  - name: listen_addresses
+    value: "0.0.0.0"
