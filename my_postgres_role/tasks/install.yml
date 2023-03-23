@@ -1,0 +1,25 @@
+---
+- name: Install PostgreSQL
+  apt:
+    update_cache: yes
+    name: postgresql-{{ pg_version }}
+    state: present
+
+- name: Install postgreql-contrib package
+  apt:
+    name: postgresql-contrib
+    state: present
+
+# to use the ansible modules for you need a package in python
+- name: Install psycopg2 for python3
+  apt:
+    name: python3-psycopg2
+    state: present
+
+- name: Ensure PostgreSQL packages are installed
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - postgresql-{{ pg_version }}
+    - postgresql-contrib
+    - python3-psycopg2

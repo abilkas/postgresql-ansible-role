@@ -1,0 +1,10 @@
+---
+- name: Configure PostgreSQL server configurations
+  become: yes
+  become_user: "{{ pg_owner_user }}"
+  postgresql_set:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    ssl_mode: "{{ item.ssl_mode | default(omit) }}"
+  with_items: "{{ pg_configure }}"
+  notify: restart postgresql service

@@ -1,0 +1,10 @@
+---
+- name: Add/remove users
+  become: yes
+  become_user: "{{ pg_owner_user }}"
+  postgresql_user:
+    encrypted: "{{ item.encrypted | default('yes') }}" # Encrypt your password
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    state: "{{ item.state | default('present') }}" # "absent" - deletes the user
+  with_items: "{{ pg_users }}"

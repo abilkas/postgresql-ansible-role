@@ -1,0 +1,22 @@
+---
+# defaults file for my_postgres_role
+pg_version: 13
+
+pg_admin_user: "postgres"
+pg_admin_db: "postgres"
+pg_owner_user: "postgres"
+pg_owner_group: "postgres"
+
+pg_users: [] # List of users
+pg_databases: [] # List of databases
+pg_users_privs: [] # List of users privs 
+
+#Configure
+pg_configure: [] # List of PostgreSQL configurations
+pg_hba_configure: []
+pg_hba_conf_path: "/etc/postgresql/{{ pg_version }}/main/pg_hba.conf"
+
+# Backup
+pg_rotation_days: "14"
+pg_backup_dir: "/backups"
+pg_backup_script_path: "/opt/scripts/pg_backup"

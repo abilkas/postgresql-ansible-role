@@ -1,0 +1,25 @@
+---
+- name: Create folder for backups
+  become: yes
+  become_user: root
+  file:
+    path: "{{ pg_backup_dir }}"
+    owner: "{{ pg_owner_user }}"
+    group: "{{ pg_owner_group }}"
+    mode: 0744
+
+- name: Create folder for backup script
+  file:
+    path: "{{ pg_backup_script_path }}"
+    owner: "{{ pg_owner_user }}"
+    group: "{{ pg_owner_group }}"
+    mode: 0744
+    recurse: yes
+
+- name: PostgreSQL Backup script
+  template:
+    src: "backup_script.sh"
+    dest: "{{ pg_backup_script_path }}"
+    owner: "{{ pg_owner_user }}"
+    group: "{{ pg_owner_group }}"
+    mode: 0744

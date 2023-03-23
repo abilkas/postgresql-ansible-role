@@ -1,0 +1,9 @@
+---
+- name: Create or remove databases
+  become: yes
+  become_user: "{{ pg_owner_user }}"
+  postgresql_db:
+    name: "{{ item.name }}"
+    owner: "{{ item.owner | default(pg_admin_user) }}"
+    state: "{{ item.state | default('present') }}" # "absent" - deletes the database
+  with_items: "{{ pg_databases }}"

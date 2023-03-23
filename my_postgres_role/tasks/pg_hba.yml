@@ -1,0 +1,15 @@
+---
+- name: Configure pg_hbf.conf file
+  become: yes
+  become_user: "{{ pg_owner_user }}"
+  postgresql_pg_hba:
+    databases: "{{ item.databases | default(omit) }}"
+    users: "{{ item.users | default(omit) }}"
+    contype: "{{ item.contype | default('local') }}" # Values may be [local, host, hostnossl, hostssl, hostgssenc, hostnogssenc]
+    dest: "{{ pg_hba_conf_path }}" # pg_hba.conf file path
+    method: "{{ item.method | default(omit) }}" # Authentication method to be used
+    address: "{{ item.address | default(omit) }}" # Address from where clients can connect
+    state: "{{ item.state | default(omit) }}" # "absent" - deletes the rule
+  with_items: "{{ pg_hba_configure }}"
+  notify:
+    - restart postgresql service

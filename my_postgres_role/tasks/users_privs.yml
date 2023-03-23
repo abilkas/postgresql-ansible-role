@@ -1,0 +1,12 @@
+---
+- name: Set privs for users
+  become: yes
+  become_user: "{{ pg_owner_user }}"
+  postgresql_privs:
+    database: "{{ item.database }}"
+    roles: "{{ item.roles }}" # The user you want to give privileges to
+    privs: "{{ item.privs | default('SELECT,INSERT,UPDATE') }}"
+    type: "{{ item.type | default(omit) }}" # Type of database object to set privileges on
+    objs: "{{ item.objs | default('ALL_IN_SCHEMA') }}"
+    state: "{{ item.state | default(omit) }}" # "absent" - deletes the privileges
+  with_items: "{{ pg_users_privs }}"
